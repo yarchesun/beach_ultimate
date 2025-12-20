@@ -338,6 +338,13 @@
     font-weight: bold;
     cursor: pointer;
   }
+    
+  .birthday-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 24px;
+  }
+
 
   </style>
 </head>
@@ -371,6 +378,14 @@
       <div class="stats-small">Команды ещё не добавлены.</div>
     </div>
   </section>
+
+  <!-- Кнопка С Дмитрием Рудовым -->
+  <div class="birthday-wrapper">
+    <button id="birthdayBtn" class="btn btn-main-yellow">
+      С ДР!
+    </button>
+  </div>
+
 
   <!-- Текущая игра -->
   <section class="section">
@@ -446,10 +461,6 @@
 </div>
 
   </section>
-  <!-- Кнопка "С Дмитрием Рудовым!" -->
-  <button id="birthdayBtn" class="btn btn-main-yellow" style="margin-top:16px;">
-    С ДР!
-  </button>
 
   <!-- Окно для фото -->
   <div id="birthdayModal" class="modal">
@@ -944,6 +955,7 @@ window.onclick = (e) => { if (e.target == birthdayModal) birthdayModal.style.dis
 </script>
 </body>
 </html>
+
 
 
 
