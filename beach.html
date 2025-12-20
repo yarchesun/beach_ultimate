@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Пляжная лига алтимата — защита</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --accent-pink: #ff007a;
+      --accent-yellow: #ffb800;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    h1 span {
+      color: var(--accent-pink);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .section {
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      outline: none;
+      background: #ffffff;
+    }
+    textarea { min-height: 70px; resize: vertical; }
+    input:focus, textarea:focus, select:focus {
+      border-color: #3b82f6;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1.1fr 1.6fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      color: var(--text);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-main {
+      background: var(--accent-pink);
+      border-color: var(--accent-pink);
+      color: #ffffff;
+    }
+    .btn-main-yellow {
+      background: var(--accent-yellow);
+      border-color: var(--accent-yellow);
+      color: #111827;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 0;
+      cursor: pointer;
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .teams-list {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #4b5563;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .team-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 3px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .team-name {
+      font-weight: 500;
+    }
+
+    .select-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .defense-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+    }
+    .defense-row .btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .stats-small {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .stats-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 6px 4px;
+      text-align: left;
+    }
+    th {
+      font-weight: 500;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* Модальное окно выбора игрока */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.visible { display: flex; }
+
+    .modal {
+      background: #ffffff;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 12px;
+      width: min(320px, 92vw);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .modal-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .modal-body {
+      margin-top: 4px;
+      overflow-y: auto;
+      max-height: 50vh;
+    }
+    .player-btn {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      padding: 6px 8px;
+      background: #f9fafb;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    .player-btn span:last-child {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    @media (max-width: 640px) {
+      .row { grid-template-columns: 1fr; }
+      .select-row { grid-template-columns: 1fr; }
+      .defense-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <h1>Пляжная лига алтимата — <span>защита</span></h1>
+
+  <!-- Команды -->
+  <section class="section">
+    <div class="top-row">
+      <h2>Команды</h2>
+      <button type="submit" form="team-form" class="btn btn-main">
+        Добавить команду
+      </button>
+    </div>
+
+    <form id="team-form" autocomplete="off">
+      <div class="row">
+        <div>
+          <label for="team-name-input">Название команды</label>
+          <input id="team-name-input" type="text" placeholder="Команда А" required>
+        </div>
+        <div>
+          <label for="team-roster-input">Игроки (по одному на строку)</label>
+          <textarea id="team-roster-input" placeholder="Игрок 1&#10;Игрок 2&#10;Игрок 3"></textarea>
+        </div>
+      </div>
+    </form>
+
+    <div class="teams-list" id="teams-list">
+      <div class="stats-small">Команды ещё не добавлены.</div>
+    </div>
+  </section>
+
+  <!-- Текущая игра -->
+  <section class="section">
+    <h2>Текущая игра</h2>
+    <div class="select-row">
+      <div>
+        <label for="team-a-select">Команда A</label>
+        <select id="team-a-select">
+          <option value="">Не выбрана</option>
+        </select>
+      </div>
+      <div>
+        <label for="team-b-select">Команда B</label>
+        <select id="team-b-select">
+          <option value="">Не выбрана</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="defense-row">
+      <button type="button" class="btn btn-main btn-defense" data-defense="A" disabled>
+        Защита — команда A
+      </button>
+      <button type="button" class="btn btn-main btn-defense" data-defense="B" disabled>
+        Защита — команда B
+      </button>
+    </div>
+
+    <div class="stats-small" id="current-game-caption">
+      Команда A: не выбрана · Команда B: не выбрана
+    </div>
+  </section>
+
+  <!-- Статистика -->
+  <section class="section">
+    <div class="stats-header">
+      <div>
+        <h2 style="margin-bottom:2px;">Статистика защиты</h2>
+        <div class="stats-small" id="last-action">
+          Пока нет зафиксированных действий.
+        </div>
+      </div>
+      <div>
+        <button type="button" class="btn-ghost" id="undo-btn" disabled>
+          Отменить
+        </button>
+        <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
+          Экспорт CSV
+        </button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>Игрок</th>
+        <th>Команда</th>
+        <th>Защиты</th>
+        <th>Последнее</th>
+      </tr>
+      </thead>
+      <tbody id="stats-body">
+      <tr><td colspan="4" class="stats-small">Нет данных.</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<!-- Модальное окно выбора игрока -->
+<div class="modal-backdrop" id="player-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>Защита</div>
+      <button type="button" class="btn-ghost" id="modal-close">Закрыть</button>
+    </div>
+    <div class="modal-sub" id="modal-team-name"></div>
+    <div class="modal-body" id="modal-player-list"></div>
+  </div>
+</div>
+
+<script>
+  // Состояние
+  const state = {
+    teams: [], // {id, name, players: [{id, name, defenseCount, lastTs}]}
+    nextTeamId: 1,
+    nextPlayerId: 1,
+    game: {
+      teamAId: null,
+      teamBId: null,
+      events: [] // {id, teamId, playerId, ts}
+    },
+    nextEventId: 1
+  };
+
+  // DOM
+  const teamForm = document.getElementById('team-form');
+  const teamNameInput = document.getElementById('team-name-input');
+  const teamRosterInput = document.getElementById('team-roster-input');
+  const teamsListEl = document.getElementById('teams-list');
+
+  const teamASelect = document.getElementById('team-a-select');
+  const teamBSelect = document.getElementById('team-b-select');
+
+  const defenseButtons = document.querySelectorAll('.btn-defense');
+  const gameCaptionEl = document.getElementById('current-game-caption');
+
+  const lastActionEl = document.getElementById('last-action');
+  const statsBodyEl = document.getElementById('stats-body');
+  const undoBtn = document.getElementById('undo-btn');
+  const exportBtn = document.getElementById('export-btn');
+
+  const playerModal = document.getElementById('player-modal');
+  const modalTeamNameEl = document.getElementById('modal-team-name');
+  const modalPlayerListEl = document.getElementById('modal-player-list');
+  const modalCloseBtn = document.getElementById('modal-close');
+
+  let modalTeamId = null;
+
+  function parseRoster(text) {
+    if (!text) return [];
+    return text
+      .split(/\n/)
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(name => ({
+        id: state.nextPlayerId++,
+        name,
+        defenseCount: 0,
+        lastTs: null
+      }));
+  }
+
+  function addTeam(name, rosterText) {
+    const trimmed = name.trim();
+    if (!trimmed) return null;
+    const team = {
+      id: state.nextTeamId++,
+      name: trimmed,
+      players: parseRoster(rosterText)
+    };
+    state.teams.push(team);
+    return team;
+  }
+
+  function findTeam(id) {
+    return state.teams.find(t => t.id === id);
+  }
+
+  function findPlayer(teamId, playerId) {
+    const team = findTeam(teamId);
+    if (!team) return null;
+    return team.players.find(p => p.id === playerId);
+  }
+
+  function formatTime(ts) {
+    if (!ts) return '';
+    const d = new Date(ts);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    const ss = String(d.getSeconds()).padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
+  }
+
+  function renderTeamsList() {
+    teamsListEl.innerHTML = '';
+    if (!state.teams.length) {
+      const div = document.createElement('div');
+      div.className = 'stats-small';
+      div.textContent = 'Команды ещё не добавлены.';
+      teamsListEl.appendChild(div);
+      return;
+    }
+    state.teams.forEach(team => {
+      const row = document.createElement('div');
+      row.className = 'team-item';
+      const left = document.createElement('div');
+      left.className = 'team-name';
+      left.textContent = team.name;
+      const right = document.createElement('div');
+      right.className = 'stats-small';
+      right.textContent = `${team.players.length} игроков`;
+      row.appendChild(left);
+      row.appendChild(right);
+      teamsListEl.appendChild(row);
+    });
+  }
+
+  function renderTeamSelects() {
+    [teamASelect, teamBSelect].forEach(select => {
+      const current = Number(select.value) || null;
+      select.innerHTML = '';
+      const optEmpty = document.createElement('option');
+      optEmpty.value = '';
+      optEmpty.textContent = 'Не выбрана';
+      select.appendChild(optEmpty);
+      state.teams.forEach(team => {
+        const opt = document.createElement('option');
+        opt.value = String(team.id);
+        opt.textContent = team.name;
+        if (team.id === current) opt.selected = true;
+        select.appendChild(opt);
+      });
+    });
+    updateCurrentGameUI();
+  }
+
+  function updateCurrentGameUI() {
+    const teamA = state.game.teamAId ? findTeam(state.game.teamAId) : null;
+    const teamB = state.game.teamBId ? findTeam(state.game.teamBId) : null;
+
+    const aName = teamA ? teamA.name : 'не выбрана';
+    const bName = teamB ? teamB.name : 'не выбрана';
+    const aPlayers = teamA ? teamA.players.length : 0;
+    const bPlayers = teamB ? teamB.players.length : 0;
+
+    gameCaptionEl.textContent =
+      `Команда A: ${aName}` +
+      (teamA ? ` (${aPlayers} игроков)` : '') +
+      ' · ' +
+      `Команда B: ${bName}` +
+      (teamB ? ` (${bPlayers} игроков)` : '');
+
+    defenseButtons.forEach(btn => {
+      const slot = btn.dataset.defense;
+      const team = slot === 'A' ? teamA : teamB;
+      btn.disabled = !(team && team.players.length);
+      btn.textContent = team
+        ? `Защита — ${team.name}`
+        : `Защита — команда ${slot}`;
+    });
+
+    updateControls();
+  }
+
+  function openPlayerModal(teamId) {
+    const team = findTeam(teamId);
+    if (!team || !team.players.length) return;
+    modalTeamId = teamId;
+    modalTeamNameEl.textContent = team.name;
+    modalPlayerListEl.innerHTML = '';
+    team.players.forEach(player => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'player-btn';
+      btn.innerHTML = `<span>${player.name}</span><span>${player.defenseCount || 0} защит</span>`;
+      btn.addEventListener('click', () => {
+        recordDefense(team.id, player.id);
+      });
+      modalPlayerListEl.appendChild(btn);
+    });
+    playerModal.classList.add('visible');
+  }
+
+  function closePlayerModal() {
+    playerModal.classList.remove('visible');
+    modalTeamId = null;
+  }
+
+  function recordDefense(teamId, playerId) {
+    const team = findTeam(teamId);
+    const player = findPlayer(teamId, playerId);
+    if (!team || !player) return;
+    const ts = Date.now();
+    player.defenseCount = (player.defenseCount || 0) + 1;
+    player.lastTs = ts;
+    const event = { id: state.nextEventId++, teamId, playerId, ts };
+    state.game.events.push(event);
+    updateLastAction(event);
+    renderStats();
+    updateCurrentGameUI();
+    closePlayerModal();
+  }
+
+  function updateLastAction(event) {
+    if (!event) {
+      lastActionEl.textContent = 'Пока нет зафиксированных действий.';
+      return;
+    }
+    const team = findTeam(event.teamId);
+    const player = findPlayer(event.teamId, event.playerId);
+    if (!team || !player) {
+      lastActionEl.textContent = 'Последнее действие недоступно.';
+      return;
+    }
+    lastActionEl.textContent =
+      `${formatTime(event.ts)} · защита игрока «${player.name}» (${team.name})`;
+  }
+
+  function undoLast() {
+    const events = state.game.events;
+    if (!events.length) return;
+    const last = events.pop();
+    const player = findPlayer(last.teamId, last.playerId);
+    if (player && player.defenseCount > 0) {
+      player.defenseCount -= 1;
+      if (player.defenseCount === 0) player.lastTs = null;
+    }
+    const prev = events[events.length - 1] || null;
+    updateLastAction(prev);
+    renderStats();
+    updateCurrentGameUI();
+  }
+
+  function buildStatsData() {
+    const ids = [];
+    if (state.game.teamAId) ids.push(state.game.teamAId);
+    if (state.game.teamBId && state.game.teamBId !== state.game.teamAId) {
+      ids.push(state.game.teamBId);
+    }
+    const rows = [];
+    ids.forEach(teamId => {
+      const team = findTeam(teamId);
+      if (!team) return;
+      team.players.forEach(player => {
+        rows.push({
+          teamName: team.name,
+          playerName: player.name,
+          count: player.defenseCount || 0,
+          lastTs: player.lastTs
+        });
+      });
+    });
+    rows.sort((a, b) => {
+      if (a.teamName < b.teamName) return -1;
+      if (a.teamName > b.teamName) return 1;
+      if (b.count !== a.count) return b.count - a.count;
+      return a.playerName.localeCompare(b.playerName);
+    });
+    return rows;
+  }
+
+  function renderStats() {
+    statsBodyEl.innerHTML = '';
+    const data = buildStatsData();
+    if (!data.length) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 4;
+      td.className = 'stats-small';
+      td.textContent = 'Нет данных.';
+      tr.appendChild(td);
+      statsBodyEl.appendChild(tr);
+      return;
+    }
+    data.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        `<td>${row.playerName}</td>` +
+        `<td>${row.teamName}</td>` +
+        `<td>${row.count}</td>` +
+        `<td>${row.lastTs ? formatTime(row.lastTs) : ''}</td>`;
+      statsBodyEl.appendChild(tr);
+    });
+  }
+
+  function updateControls() {
+    undoBtn.disabled = !state.game.events.length;
+    const hasTeams = state.game.teamAId && state.game.teamBId;
+    const hasData = buildStatsData().length > 0;
+    exportBtn.disabled = !(hasTeams && hasData);
+  }
+
+  function exportCsv() {
+    const data = buildStatsData();
+    if (!data.length) return;
+    let csv = 'Team,Player,Defenses,LastAction\n';
+    data.forEach(row => {
+      const line = [
+        row.teamName,
+        row.playerName,
+        row.count,
+        row.lastTs ? formatTime(row.lastTs) : ''
+      ].map(v => {
+        const s = String(v ?? '');
+        return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }).join(',');
+      csv += line + '\n';
+    });
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const d = new Date();
+    const stamp =
+      `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_` +
+      `${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+    a.href = url;
+    a.download = `defense_stats_${stamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Слушатели
+  teamForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = teamNameInput.value;
+    const roster = teamRosterInput.value;
+    const team = addTeam(name, roster);
+    if (!team) return;
+    teamNameInput.value = '';
+    teamRosterInput.value = '';
+    renderTeamsList();
+    renderTeamSelects();
+    renderStats();
+  });
+
+  teamASelect.addEventListener('change', () => {
+    const val = Number(teamASelect.value) || null;
+    if (val && val === state.game.teamBId) {
+      alert('Команды A и B не могут совпадать.');
+      teamASelect.value = '';
+      state.game.teamAId = null;
+    } else {
+      state.game.teamAId = val;
+    }
+    updateCurrentGameUI();
+    renderStats();
+  });
+
+  teamBSelect.addEventListener('change', () => {
+    const val = Number(teamBSelect.value) || null;
+    if (val && val === state.game.teamAId) {
+      alert('Команды A и B не могут совпадать.');
+      teamBSelect.value = '';
+      state.game.teamBId = null;
+    } else {
+      state.game.teamBId = val;
+    }
+    updateCurrentGameUI();
+    renderStats();
+  });
+
+  defenseButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const slot = btn.dataset.defense;
+      const teamId = slot === 'A' ? state.game.teamAId : state.game.teamBId;
+      if (teamId) openPlayerModal(teamId);
+    });
+  });
+
+  modalCloseBtn.addEventListener('click', closePlayerModal);
+  playerModal.addEventListener('click', e => {
+    if (e.target === playerModal) closePlayerModal();
+  });
+
+  undoBtn.addEventListener('click', undoLast);
+  exportBtn.addEventListener('click', exportCsv);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modalTeamId) {
+      closePlayerModal();
+    }
+  });
+
+  // Инициализация
+  renderTeamsList();
+  renderTeamSelects();
+  renderStats();
+  updateLastAction(null);
+</script>
+</body>
+</html>
