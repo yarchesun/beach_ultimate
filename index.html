@@ -329,7 +329,7 @@
           Отменить
         </button>
         <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
-          Экспорт CSV
+          Экспорт Excel
         </button>
       </div>
     </div>
@@ -362,6 +362,8 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  
 <script>
   // Состояние
   const state = {
@@ -661,36 +663,44 @@ function loadState() {
     exportBtn.disabled = !(hasTeams && hasData);
   }
 
-  function exportCsv() {
-    const data = buildStatsData();
-    if (!data.length) return;
-    let csv = 'Team,Player,Defenses,LastAction\n';
-    data.forEach(row => {
-      const line = [
-        row.teamName,
-        row.playerName,
-        row.count,
-        row.lastTs ? formatTime(row.lastTs) : ''
-      ].map(v => {
-        const s = String(v ?? '');
-        return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-      }).join(',');
-      csv += line + '\n';
-    });
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const d = new Date();
-    const stamp =
-      `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_` +
-      `${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
-    a.href = url;
-    a.download = `defense_stats_${stamp}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+  function exportExcel() {
+  const data = buildStatsData();
+  if (!data.length) return;
+
+  // Заголовки + данные
+  const sheetData = [
+    ['Команда', 'Игрок', 'Количество защит', 'Последнее действие'],
+    ...data.map(row => [
+      row.teamName,
+      row.playerName,
+      row.count,
+      row.lastTs ? formatTime(row.lastTs) : ''
+    ])
+  ];
+
+  // Создаём лист
+  const ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+  // 👉 Ширина столбцов (в символах)
+  ws['!cols'] = [
+    { wch: 22 }, // Команда
+    { wch: 20 }, // Игрок
+    { wch: 18 }, // Количество защит
+    { wch: 20 }  // Последнее действие
+  ];
+
+  // Создаём книгу
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Статистика');
+
+  // Имя файла
+  const d = new Date();
+  const stamp =
+    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_` +
+    `${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+
+  XLSX.writeFile(wb, `defense_stats_${stamp}.xlsx`);
+}
 
   // Слушатели
   teamForm.addEventListener('submit', e => {
@@ -749,7 +759,7 @@ function loadState() {
   });
 
   undoBtn.addEventListener('click', undoLast);
-  exportBtn.addEventListener('click', exportCsv);
+  exportBtn.addEventListener('click', exportExcel);
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && modalTeamId) {
@@ -766,5 +776,6 @@ function loadState() {
 </script>
 </body>
 </html>
+
 
 
