@@ -245,6 +245,17 @@
       font-size: 11px;
     }
 
+    .btn-danger {
+      background: #000000;
+      border-color: #000000;
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.85;
+    }
+
+
     @media (max-width: 640px) {
       .row { grid-template-columns: 1fr; }
       .select-row { grid-template-columns: 1fr; }
@@ -331,6 +342,9 @@
         <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
           Экспорт Excel
         </button>
+        <button type="button" class="btn btn-danger" id="reset-btn">
+          Перезагрузка
+        </button>
       </div>
     </div>
 
@@ -412,6 +426,7 @@ function loadState() {
   const statsBodyEl = document.getElementById('stats-body');
   const undoBtn = document.getElementById('undo-btn');
   const exportBtn = document.getElementById('export-btn');
+  const resetBtn = document.getElementById('reset-btn');
 
   const playerModal = document.getElementById('player-modal');
   const modalTeamNameEl = document.getElementById('modal-team-name');
@@ -507,6 +522,39 @@ function loadState() {
     });
     updateCurrentGameUI();
   }
+  function resetAllData() {
+  const ok = confirm(
+    'Вы действительно хотите удалить ВСЕ данные?\n\n' +
+    'Будут удалены:\n' +
+    '• все команды\n' +
+    '• все игроки\n' +
+    '• вся статистика\n\n' +
+    'Отменить это действие будет невозможно.'
+  );
+
+  if (!ok) return;
+
+  // очищаем localStorage
+  localStorage.removeItem(STORAGE_KEY);
+
+  // сбрасываем состояние
+  state.teams = [];
+  state.nextTeamId = 1;
+  state.nextPlayerId = 1;
+  state.game = {
+    teamAId: null,
+    teamBId: null,
+    events: []
+  };
+  state.nextEventId = 1;
+
+  // обновляем UI
+  renderTeamsList();
+  renderTeamSelects();
+  renderStats();
+  updateLastAction(null);
+  updateControls();
+}
 
   function updateCurrentGameUI() {
     const teamA = state.game.teamAId ? findTeam(state.game.teamAId) : null;
@@ -745,6 +793,8 @@ function loadState() {
     renderStats();
   });
 
+  resetBtn.addEventListener('click', resetAllData);
+
   defenseButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const slot = btn.dataset.defense;
@@ -776,6 +826,7 @@ function loadState() {
 </script>
 </body>
 </html>
+
 
 
 
