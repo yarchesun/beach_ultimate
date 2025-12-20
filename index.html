@@ -308,43 +308,6 @@
       .defense-row { flex-direction: column; }
     }
 
-    /* Модальное окно "С ДР!" */
-  .modal {
-    display: none; 
-    position: fixed;
-    z-index: 1000;
-    padding-top: 60px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.9);
-  }
-
-  .modal-content {
-    margin: auto;
-    display: block;
-    max-width: 90%;
-    max-height: 90%;
-  }
-
-  .close {
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-    
-  .birthday-wrapper {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0 24px;
-  }
-
    /* Модальное окно */
 #birthdayModal {
   display: none;
@@ -387,7 +350,7 @@
 /* Картинка с анимацией вылета */
 #birthdayImg {
   position: absolute; /* внутри модалки */
-  right: 20px;
+  right: 0px;
   bottom: 20px;
   max-width: 90%;
   max-height: 80%; /* чтобы не выходила за экран */
@@ -1118,6 +1081,7 @@ window.onclick = (e) => {
 </script>
 </body>
 </html>
+
 
 
 
