@@ -122,6 +122,16 @@
       gap: 8px;
       margin-bottom: 12px;
     }
+    .btn-warn {
+      background: #fee2e2;      /* светло-красный */
+      border-color: #fecaca;
+      color: #991b1b;           /* тёмно-красный текст */
+    }
+
+    .btn-warn:hover {
+      background: #fecaca;
+    }
+
 
     .teams-list {
       margin-top: 8px;
@@ -228,6 +238,22 @@
       overflow-y: auto;
       max-height: 50vh;
     }
+
+    .mobile-reset {
+      display: none;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .mobile-reset {
+        display: block;
+      }
+
+      .desktop-reset {
+        display: none;
+      }
+    }
+
     .player-btn {
       width: 100%;
       border-radius: 6px;
@@ -336,7 +362,7 @@
         </div>
       </div>
       <div>
-        <button type="button" class="btn-ghost" id="undo-btn" disabled>
+        <button type="button" class="btn btn-warn" id="undo-btn" disabled>
           Отменить
         </button>
         <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
@@ -361,6 +387,12 @@
       <tr><td colspan="4" class="stats-small">Нет данных.</td></tr>
       </tbody>
     </table>
+    <div class="mobile-reset">
+      <button type="button" class="btn btn-danger" id="reset-btn-mobile">
+        Перезагрузка
+      </button>
+</div>
+
   </section>
 </div>
 
@@ -427,6 +459,8 @@ function loadState() {
   const undoBtn = document.getElementById('undo-btn');
   const exportBtn = document.getElementById('export-btn');
   const resetBtn = document.getElementById('reset-btn');
+  const resetBtnMobile = document.getElementById('reset-btn-mobile');
+
 
   const playerModal = document.getElementById('player-modal');
   const modalTeamNameEl = document.getElementById('modal-team-name');
@@ -794,6 +828,7 @@ function loadState() {
   });
 
   resetBtn.addEventListener('click', resetAllData);
+  resetBtnMobile.addEventListener('click', resetAllData);
 
   defenseButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -826,6 +861,7 @@ function loadState() {
 </script>
 </body>
 </html>
+
 
 
 
