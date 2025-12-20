@@ -79,6 +79,26 @@
       margin-bottom: 8px;
     }
 
+    .stats-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+
+    @media (max-width: 640px) {
+      .stats-actions {
+        gap: 6px;
+      }
+
+      .stats-actions .btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
+
+
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -361,16 +381,16 @@
           Пока нет зафиксированных действий.
         </div>
       </div>
-      <div>
-        <button type="button" class="btn btn-warn" id="undo-btn" disabled>
-          Отменить
-        </button>
-        <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
-          Экспорт Excel
-        </button>
-        <button type="button" class="btn btn-danger desktop-reset" id="reset-btn">
-          Перезагрузка
-        </button>
+      <div class="stats-actions">
+      <button type="button" class="btn btn-warn" id="undo-btn" disabled>
+        Отменить
+      </button>
+      <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
+        Экспорт Excel
+      </button>
+      <button type="button" class="btn btn-danger desktop-reset" id="reset-btn">
+        Перезагрузка
+      </button>
       </div>
     </div>
 
@@ -861,6 +881,7 @@ function loadState() {
 </script>
 </body>
 </html>
+
 
 
 
