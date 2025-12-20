@@ -254,7 +254,7 @@
 </head>
 <body>
 <div class="page">
-  <h1>Пляжная лига алтимата — <span>защита</span></h1>
+  <h1>Пляжная лига — <span>защита</span></h1>
 
   <!-- Команды -->
   <section class="section">
@@ -375,6 +375,24 @@
     },
     nextEventId: 1
   };
+
+  const STORAGE_KEY = 'beach_ultimate_state';
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  try {
+    const saved = JSON.parse(raw);
+    Object.assign(state, saved);
+  } catch (e) {
+    console.error('Ошибка загрузки состояния', e);
+  }
+}
+
 
   // DOM
   const teamForm = document.getElementById('team-form');
@@ -550,6 +568,7 @@
     const event = { id: state.nextEventId++, teamId, playerId, ts };
     state.game.events.push(event);
     updateLastAction(event);
+    saveState();
     renderStats();
     updateCurrentGameUI();
     closePlayerModal();
@@ -581,37 +600,35 @@
     }
     const prev = events[events.length - 1] || null;
     updateLastAction(prev);
+    saveState();
     renderStats();
     updateCurrentGameUI();
   }
 
-  function buildStatsData() {
-    const ids = [];
-    if (state.game.teamAId) ids.push(state.game.teamAId);
-    if (state.game.teamBId && state.game.teamBId !== state.game.teamAId) {
-      ids.push(state.game.teamBId);
-    }
-    const rows = [];
-    ids.forEach(teamId => {
-      const team = findTeam(teamId);
-      if (!team) return;
-      team.players.forEach(player => {
+ function buildStatsData() {
+  const rows = [];
+
+  state.teams.forEach(team => {
+    team.players.forEach(player => {
+      if ((player.defenseCount || 0) > 0) {
         rows.push({
           teamName: team.name,
           playerName: player.name,
-          count: player.defenseCount || 0,
+          count: player.defenseCount,
           lastTs: player.lastTs
         });
-      });
+      }
     });
-    rows.sort((a, b) => {
-      if (a.teamName < b.teamName) return -1;
-      if (a.teamName > b.teamName) return 1;
-      if (b.count !== a.count) return b.count - a.count;
-      return a.playerName.localeCompare(b.playerName);
-    });
-    return rows;
-  }
+  });
+
+  rows.sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count;
+    if (a.teamName !== b.teamName) return a.teamName.localeCompare(b.teamName);
+    return a.playerName.localeCompare(b.playerName);
+  });
+
+  return rows;
+}
 
   function renderStats() {
     statsBodyEl.innerHTML = '';
@@ -682,6 +699,7 @@
     const roster = teamRosterInput.value;
     const team = addTeam(name, roster);
     if (!team) return;
+    saveState();
     teamNameInput.value = '';
     teamRosterInput.value = '';
     renderTeamsList();
@@ -698,6 +716,7 @@
     } else {
       state.game.teamAId = val;
     }
+    saveState();
     updateCurrentGameUI();
     renderStats();
   });
@@ -711,6 +730,7 @@
     } else {
       state.game.teamBId = val;
     }
+    saveState();
     updateCurrentGameUI();
     renderStats();
   });
@@ -738,6 +758,7 @@
   });
 
   // Инициализация
+  loadState();
   renderTeamsList();
   renderTeamSelects();
   renderStats();
@@ -745,3 +766,4 @@
 </script>
 </body>
 </html>
+
