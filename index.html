@@ -345,6 +345,66 @@
     margin: 20px 0 24px;
   }
 
+    /* Анимация вылета картинки из угла */
+#birthdayModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 2000;
+}
+
+#birthdayModal.show {
+  display: block;
+}
+
+#birthdayImg {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  max-width: 90vw;
+  max-height: 90vh;
+  transform: scale(0.1);
+  transform-origin: bottom right;
+  transition: transform 0.5s ease;
+}
+
+#birthdayModal.show #birthdayImg {
+  transform: scale(1);
+}
+
+/* Крестик */
+#birthdayModal .close {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Надпись */
+#birthdayTitle {
+  position: fixed;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  z-index: 2100;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  pointer-events: none;
+}
+
+/* Canvas для конфетти */
+#confettiCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: 2050;
+  pointer-events: none;
+}
+
 
   </style>
 </head>
@@ -464,9 +524,17 @@
 
   <!-- Окно для фото -->
   <div id="birthdayModal" class="modal">
-    <span class="close">&times;</span>
-    <img class="modal-content" id="birthdayImg">
-  </div>
+  <span class="close">&times;</span>
+
+  <!-- Надпись -->
+  <div id="birthdayTitle">С Дмитрием Рудовым!</div>
+
+  <img class="modal-content" id="birthdayImg">
+
+  <!-- Контейнер для конфетти -->
+  <canvas id="confettiCanvas"></canvas>
+</div>
+
 
 </div>
 
@@ -935,15 +1003,88 @@ const birthdayClose = birthdayModal.querySelector(".close");
 // Путь к фото
 const birthdayPhoto = "dr.jpg";
 
-// Открытие модального окна
-birthdayBtn.onclick = () => {
-  birthdayModal.style.display = "block";
-  birthdayImg.src = birthdayPhoto;
+// 🎊 Конфетти
+const confettiCanvas = document.getElementById("confettiCanvas");
+const ctx = confettiCanvas.getContext("2d");
+
+let confetti = [];
+let confettiAnimation;
+
+function resizeCanvas() {
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function createConfetti() {
+  confetti = [];
+  for (let i = 0; i < 150; i++) {
+    confetti.push({
+      x: Math.random() * confettiCanvas.width,
+      y: Math.random() * -confettiCanvas.height,
+      r: Math.random() * 6 + 4,
+      d: Math.random() * 5 + 2,
+      color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+      tilt: Math.random() * 10 - 10
+    });
+  }
 }
 
-// Закрытие окна
-birthdayClose.onclick = () => { birthdayModal.style.display = "none"; }
-window.onclick = (e) => { if (e.target == birthdayModal) birthdayModal.style.display = "none"; }
+function drawConfetti() {
+  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+  confetti.forEach(c => {
+    ctx.beginPath();
+    ctx.fillStyle = c.color;
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  updateConfetti();
+}
+
+function updateConfetti() {
+  confetti.forEach(c => {
+    c.y += c.d;
+    c.x += Math.sin(c.tilt);
+
+    if (c.y > confettiCanvas.height) {
+      c.y = -10;
+      c.x = Math.random() * confettiCanvas.width;
+    }
+  });
+}
+
+function startConfetti() {
+  createConfetti();
+  confettiAnimation = setInterval(drawConfetti, 20);
+}
+
+function stopConfetti() {
+  clearInterval(confettiAnimation);
+  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+}
+
+
+birthdayBtn.onclick = () => {
+  birthdayImg.src = birthdayPhoto;
+  birthdayModal.classList.add("show");
+  startConfetti(); // запускаем конфетти при открытии
+};
+
+birthdayClose.onclick = () => {
+  birthdayModal.classList.remove("show");
+  stopConfetti(); // останавливаем конфетти при закрытии
+};
+
+window.onclick = (e) => {
+  if (e.target === birthdayModal) {
+    birthdayModal.classList.remove("show");
+    stopConfetti();
+  }
+};
+
 
 
   // Инициализация
@@ -955,6 +1096,7 @@ window.onclick = (e) => { if (e.target == birthdayModal) birthdayModal.style.dis
 </script>
 </body>
 </html>
+
 
 
 
