@@ -923,8 +923,7 @@ function loadState() {
       if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
         await navigator.share({
           files: [file],
-          title: 'Статистика защиты',
-          text: 'Экспорт статистики'
+          title: 'Статистика защиты'
         });
         return; // пользователь сам сохранит в "Файлы"
       }
@@ -1123,6 +1122,7 @@ window.onclick = (e) => {
 </script>
 </body>
 </html>
+
 
 
 
