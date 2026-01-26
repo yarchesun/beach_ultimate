@@ -873,44 +873,85 @@ function loadState() {
     exportBtn.disabled = !(hasTeams && hasData);
   }
 
-  function exportExcel() {
-  const data = buildStatsData();
-  if (!data.length) return;
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
 
-  // Заголовки + данные
-  const sheetData = [
-    ['Команда', 'Игрок', 'Количество защит', 'Последнее действие'],
-    ...data.map(row => [
-      row.teamName,
-      row.playerName,
-      row.count,
-      row.lastTs ? formatTime(row.lastTs) : ''
-    ])
-  ];
+  async function exportExcel() {
+    const data = buildStatsData();
+    if (!data.length) return;
 
-  // Создаём лист
-  const ws = XLSX.utils.aoa_to_sheet(sheetData);
+    const sheetData = [
+      ['Команда', 'Игрок', 'Количество защит', 'Последнее действие'],
+      ...data.map(row => [
+        row.teamName,
+        row.playerName,
+        row.count,
+        row.lastTs ? formatTime(row.lastTs) : ''
+      ])
+    ];
 
-  // 👉 Ширина столбцов (в символах)
-  ws['!cols'] = [
-    { wch: 22 }, // Команда
-    { wch: 20 }, // Игрок
-    { wch: 18 }, // Количество защит
-    { wch: 20 }  // Последнее действие
-  ];
+    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+    ws['!cols'] = [
+      { wch: 22 },
+      { wch: 20 },
+      { wch: 18 },
+      { wch: 20 }
+    ];
 
-  // Создаём книгу
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Статистика');
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Статистика');
 
-  // Имя файла
-  const d = new Date();
-  const stamp =
-    `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_` +
-    `${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+    // Генерим XLSX в память (ArrayBuffer)
+    const array = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
 
-  XLSX.writeFile(wb, `defense_stats_${stamp}.xlsx`);
-}
+    const mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const blob = new Blob([array], { type: mime });
+
+    const d = new Date();
+    const stamp =
+      `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_` +
+      `${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+    const filename = `defense_stats_${stamp}.xlsx`;
+
+    // 1) Лучший вариант для iOS/Android: системное "Поделиться" с файлом
+    try {
+      const file = new File([blob], filename, { type: mime });
+
+      // navigator.canShare обязателен, иначе share с files может упасть
+      if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+        await navigator.share({
+          files: [file],
+          title: 'Статистика защиты',
+          text: 'Экспорт статистики'
+        });
+        return; // пользователь сам сохранит в "Файлы"
+      }
+    } catch (e) {
+      // если share не поддерживается или пользователь отменил — пойдём в fallback
+    }
+
+    // 2) Обычная загрузка (десктоп/часть Android)
+    const url = URL.createObjectURL(blob);
+
+    // iOS часто игнорирует download у <a>, поэтому делаем отдельный fallback
+    if (!isIOS()) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      return;
+    }
+
+    // 3) Fallback для iOS: открыть файл в новой вкладке (дальше "Поделиться" -> "Сохранить в Файлы")
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+
 
   // Слушатели
   teamForm.addEventListener('submit', e => {
@@ -1082,6 +1123,7 @@ window.onclick = (e) => {
 </script>
 </body>
 </html>
+
 
 
 
