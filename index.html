@@ -122,6 +122,57 @@
       border-color: var(--accent-yellow);
       color: #111827;
     }
+
+    .btn-itmo {
+  background: #0057b8;       /* ITMO-like blue */
+  border-color: #0057b8;
+  color: #ffffff;
+}
+
+.btn-itmo:hover {
+  opacity: 0.9;
+}
+
+.birthday-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+    #mdaModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 2100;
+}
+
+#mdaModal.show {
+  display: block;
+}
+
+#mdaModal .close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 32px;
+  color: #fff;
+  cursor: pointer;
+  z-index: 2110;
+}
+
+#mdaGif {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 92vw;
+  max-height: 85vh;
+  border-radius: 10px;
+}
+
+
     .btn-ghost {
       background: transparent;
       border: none;
@@ -426,11 +477,12 @@
   </section>
 
   <!-- Кнопка С Дмитрием Рудовым -->
-  <div class="birthday-wrapper">
-    <button id="birthdayBtn" class="btn btn-main-yellow">
-      С ДР!
-    </button>
-  </div>
+ <div class="birthday-wrapper">
+  <button id="birthdayBtn" class="btn btn-main-yellow">С ДР!</button>
+
+  <button id="mdaBtn" class="btn btn-itmo">МДА</button>
+</div>
+
 
 
   <!-- Текущая игра -->
@@ -511,6 +563,10 @@
   <!-- Окно для фото -->
   <div id="birthdayModal" class="modal">
   <span class="close">&times;</span>
+  <div id="mdaModal">
+  <span class="close">&times;</span>
+  <img id="mdaGif" alt="MDA gif">
+
 
   <!-- Надпись -->
   <div id="birthdayTitle">С Дмитрием Рудовым!</div>
@@ -1026,6 +1082,38 @@ const birthdayModal = document.getElementById("birthdayModal");
 const birthdayImg = document.getElementById("birthdayImg");
 const birthdayClose = birthdayModal.querySelector(".close");
 
+const mdaBtn = document.getElementById("mdaBtn");
+const mdaModal = document.getElementById("mdaModal");
+const mdaGif = document.getElementById("mdaGif");
+const mdaClose = mdaModal.querySelector(".close");
+
+// путь к гифке (положи файл рядом с index.html)
+const mdaGifPath = "mda.gif";
+
+mdaBtn.onclick = () => {
+  mdaGif.src = mdaGifPath;
+  mdaModal.classList.add("show");
+};
+
+mdaClose.onclick = () => {
+  mdaModal.classList.remove("show");
+  mdaGif.src = ""; // чтобы сбросить проигрывание
+};
+
+window.addEventListener("click", (e) => {
+  if (e.target === mdaModal) {
+    mdaModal.classList.remove("show");
+    mdaGif.src = "";
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && mdaModal.classList.contains("show")) {
+    mdaModal.classList.remove("show");
+    mdaGif.src = "";
+  }
+});
+
 // Путь к фото
 const birthdayPhoto = "dr.jpg";
 
@@ -1122,6 +1210,7 @@ window.onclick = (e) => {
 </script>
 </body>
 </html>
+
 
 
 
