@@ -97,8 +97,6 @@
       }
     }
 
-
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -123,55 +121,22 @@
       color: #111827;
     }
 
+    /* ITMO-like blue */
     .btn-itmo {
-  background: #0057b8;       /* ITMO-like blue */
-  border-color: #0057b8;
-  color: #ffffff;
-}
+      background: #0057b8;
+      border-color: #0057b8;
+      color: #ffffff;
+    }
+    .btn-itmo:hover { opacity: 0.9; }
 
-.btn-itmo:hover {
-  opacity: 0.9;
-}
-
-.birthday-wrapper {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-    #mdaModal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.9);
-  z-index: 2100;
-}
-
-#mdaModal.show {
-  display: block;
-}
-
-#mdaModal .close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  font-size: 32px;
-  color: #fff;
-  cursor: pointer;
-  z-index: 2110;
-}
-
-#mdaGif {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 92vw;
-  max-height: 85vh;
-  border-radius: 10px;
-}
-
+    /* Кнопки по центру */
+    .birthday-wrapper {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center; /* <-- центр */
+      margin-bottom: 12px;
+    }
 
     .btn-ghost {
       background: transparent;
@@ -194,15 +159,11 @@
       margin-bottom: 12px;
     }
     .btn-warn {
-      background: #fee2e2;      /* светло-красный */
+      background: #fee2e2;
       border-color: #fecaca;
-      color: #991b1b;           /* тёмно-красный текст */
+      color: #991b1b;
     }
-
-    .btn-warn:hover {
-      background: #fecaca;
-    }
-
+    .btn-warn:hover { background: #fecaca; }
 
     .teams-list {
       margin-top: 8px;
@@ -218,9 +179,7 @@
       padding: 3px 0;
       border-bottom: 1px solid #f3f4f6;
     }
-    .team-name {
-      font-weight: 500;
-    }
+    .team-name { font-weight: 500; }
 
     .select-row {
       display: grid;
@@ -316,13 +275,8 @@
     }
 
     @media (max-width: 640px) {
-      .mobile-reset {
-        display: block;
-      }
-
-      .desktop-reset {
-        display: none;
-      }
+      .mobile-reset { display: block; }
+      .desktop-reset { display: none; }
     }
 
     .player-btn {
@@ -347,11 +301,7 @@
       border-color: #000000;
       color: #ffffff;
     }
-
-    .btn-danger:hover {
-      opacity: 0.85;
-    }
-
+    .btn-danger:hover { opacity: 0.85; }
 
     @media (max-width: 640px) {
       .row { grid-template-columns: 1fr; }
@@ -359,93 +309,116 @@
       .defense-row { flex-direction: column; }
     }
 
-   /* Модальное окно */
-#birthdayModal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.9);
-  z-index: 2000;
-}
+    /* ====== Birthday modal ====== */
+    #birthdayModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 2000;
+    }
+    #birthdayModal.show { display: block; }
 
-/* Показываем модалку */
-#birthdayModal.show {
-  display: block;
-}
+    #birthdayClose {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 32px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 2100;
+    }
 
-/* Крестик */
-#birthdayModal .close {
-  position: absolute; /* absolute относительно модалки */
-  top: 16px;
-  right: 16px;
-  font-size: 32px;
-  color: #fff;
-  cursor: pointer;
-  z-index: 2100; /* выше всего */
-}
+    #birthdayTitle {
+      position: absolute;
+      top: 16px;
+      width: 100%;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      z-index: 2090;
+      pointer-events: none;
+    }
 
-/* Надпись над фото */
-#birthdayTitle {
-  position: absolute;
-  top: 16px;
-  width: 100%;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 700;
-  color: #fff;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
-  z-index: 2090; /* ниже крестика, выше фото */
-  pointer-events: none;
-}
+    /* Картинка по центру с “вылетом” */
+    #birthdayImg {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      max-width: 90%;
+      max-height: 80%;
+      transform: translate(-50%, -50%) scale(0.1);
+      transform-origin: center;
+      transition: transform 0.35s ease;
+      z-index: 2080;
+    }
+    #birthdayModal.show #birthdayImg {
+      transform: translate(-50%, -50%) scale(1);
+    }
 
-/* Картинка с анимацией вылета */
-#birthdayImg {
-  position: absolute; /* внутри модалки */
-  justify-content: center;
-  right: 20px;
-  bottom: 20px;
-  max-width: 90%;
-  max-height: 80%; /* чтобы не выходила за экран */
-  transform: scale(0.1);
-  transform-origin: bottom right;
-  transition: transform 0.5s ease;
-  z-index: 2080;
-}
+    #confettiCanvas {
+      position: absolute;
+      inset: 0;
+      z-index: 2070;
+      pointer-events: none;
+    }
 
-#birthdayModal.show #birthdayImg {
-  transform: scale(1);
-}
+    @media (max-width: 640px) {
+      #birthdayTitle {
+        font-size: 18px;
+        top: 12px;
+      }
+      #birthdayClose {
+        font-size: 28px;
+        top: 12px;
+        right: 12px;
+      }
+      #birthdayImg {
+        max-height: 70%;
+      }
+    }
 
-/* Canvas для конфетти */
-#confettiCanvas {
-  position: absolute;
-  inset: 0;
-  z-index: 2070;
-  pointer-events: none;
-}
+    /* ====== MDA modal ====== */
+    #mdaModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 2100;
+    }
+    #mdaModal.show { display: block; }
 
-/* Адаптивность текста */
-@media (max-width: 640px) {
-  #birthdayTitle {
-    font-size: 18px;
-    top: 12px;
-  }
-  #birthdayModal .close {
-    font-size: 28px;
-    top: 12px;
-    right: 12px;
-  }
-  #birthdayImg {
-    max-height: 70%;
-    right: 10px;
-    bottom: 10px;
-  }
-}
+    #mdaClose {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 32px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 2110;
+    }
 
-
+    #mdaGif {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      max-width: 92vw;
+      max-height: 85vh;
+      border-radius: 10px;
+      transform: translate(-50%, -50%) scale(0.1);
+      transform-origin: center;
+      transition: transform 0.35s ease;
+      z-index: 2105;
+    }
+    #mdaModal.show #mdaGif {
+      transform: translate(-50%, -50%) scale(1);
+    }
   </style>
 </head>
-<body>
+
+  <body>
 <div class="page">
   <h1>Пляжная лига — <span>защита</span></h1>
 
@@ -476,14 +449,12 @@
     </div>
   </section>
 
-  <!-- Кнопка С Дмитрием Рудовым -->
- <div class="birthday-wrapper">
-  <button id="birthdayBtn" class="btn btn-main-yellow">С ДР!</button>
-
-  <button id="mdaBtn" class="btn btn-itmo">МДА</button>
-</div>
-
-
+  <!-- Кнопки по центру -->
+  <div class="birthday-wrapper">
+    <!-- 1) С ДР теперь розовая -->
+    <button id="birthdayBtn" class="btn btn-main">С ДР!</button>
+    <button id="mdaBtn" class="btn btn-itmo">МДА</button>
+  </div>
 
   <!-- Текущая игра -->
   <section class="section">
@@ -527,15 +498,15 @@
         </div>
       </div>
       <div class="stats-actions">
-      <button type="button" class="btn btn-warn" id="undo-btn" disabled>
-        Отменить
-      </button>
-      <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
-        Экспорт Excel
-      </button>
-      <button type="button" class="btn btn-danger desktop-reset" id="reset-btn">
-        Перезагрузка
-      </button>
+        <button type="button" class="btn btn-warn" id="undo-btn" disabled>
+          Отменить
+        </button>
+        <button type="button" class="btn btn-main-yellow" id="export-btn" disabled>
+          Экспорт Excel
+        </button>
+        <button type="button" class="btn btn-danger desktop-reset" id="reset-btn">
+          Перезагрузка
+        </button>
       </div>
     </div>
 
@@ -556,27 +527,22 @@
       <button type="button" class="btn btn-danger" id="reset-btn-mobile">
         Перезагрузка
       </button>
-</div>
-
+    </div>
   </section>
 
-  <!-- Окно для фото -->
-  <div id="birthdayModal" class="modal">
-  <span class="close">&times;</span>
+  <!-- Модалка С ДР (отдельно) -->
+  <div id="birthdayModal">
+    <span id="birthdayClose">&times;</span>
+    <div id="birthdayTitle">С Дмитрием Рудовым!</div>
+    <img id="birthdayImg" alt="DR">
+    <canvas id="confettiCanvas"></canvas>
+  </div>
+
+  <!-- Модалка МДА (отдельно) -->
   <div id="mdaModal">
-  <span class="close">&times;</span>
-  <img id="mdaGif" alt="MDA gif">
-
-
-  <!-- Надпись -->
-  <div id="birthdayTitle">С Дмитрием Рудовым!</div>
-
-  <img class="modal-content" id="birthdayImg">
-
-  <!-- Контейнер для конфетти -->
-  <canvas id="confettiCanvas"></canvas>
-</div>
-
+    <span id="mdaClose">&times;</span>
+    <img id="mdaGif" alt="MDA gif">
+  </div>
 
 </div>
 
@@ -593,7 +559,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  
+
 <script>
   // Состояние
   const state = {
@@ -610,21 +576,20 @@
 
   const STORAGE_KEY = 'beach_ultimate_state';
 
-function saveState() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function loadState() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return;
-  try {
-    const saved = JSON.parse(raw);
-    Object.assign(state, saved);
-  } catch (e) {
-    console.error('Ошибка загрузки состояния', e);
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
-}
 
+  function loadState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const saved = JSON.parse(raw);
+      Object.assign(state, saved);
+    } catch (e) {
+      console.error('Ошибка загрузки состояния', e);
+    }
+  }
 
   // DOM
   const teamForm = document.getElementById('team-form');
@@ -644,7 +609,6 @@ function loadState() {
   const exportBtn = document.getElementById('export-btn');
   const resetBtn = document.getElementById('reset-btn');
   const resetBtnMobile = document.getElementById('reset-btn-mobile');
-
 
   const playerModal = document.getElementById('player-modal');
   const modalTeamNameEl = document.getElementById('modal-team-name');
@@ -740,39 +704,37 @@ function loadState() {
     });
     updateCurrentGameUI();
   }
+
   function resetAllData() {
-  const ok = confirm(
-    'Вы действительно хотите удалить ВСЕ данные?\n\n' +
-    'Будут удалены:\n' +
-    '• все команды\n' +
-    '• все игроки\n' +
-    '• вся статистика\n\n' +
-    'Отменить это действие будет невозможно.'
-  );
+    const ok = confirm(
+      'Вы действительно хотите удалить ВСЕ данные?\n\n' +
+      'Будут удалены:\n' +
+      '• все команды\n' +
+      '• все игроки\n' +
+      '• вся статистика\n\n' +
+      'Отменить это действие будет невозможно.'
+    );
 
-  if (!ok) return;
+    if (!ok) return;
 
-  // очищаем localStorage
-  localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY);
 
-  // сбрасываем состояние
-  state.teams = [];
-  state.nextTeamId = 1;
-  state.nextPlayerId = 1;
-  state.game = {
-    teamAId: null,
-    teamBId: null,
-    events: []
-  };
-  state.nextEventId = 1;
+    state.teams = [];
+    state.nextTeamId = 1;
+    state.nextPlayerId = 1;
+    state.game = {
+      teamAId: null,
+      teamBId: null,
+      events: []
+    };
+    state.nextEventId = 1;
 
-  // обновляем UI
-  renderTeamsList();
-  renderTeamSelects();
-  renderStats();
-  updateLastAction(null);
-  updateControls();
-}
+    renderTeamsList();
+    renderTeamSelects();
+    renderStats();
+    updateLastAction(null);
+    updateControls();
+  }
 
   function updateCurrentGameUI() {
     const teamA = state.game.teamAId ? findTeam(state.game.teamAId) : null;
@@ -873,30 +835,30 @@ function loadState() {
     updateCurrentGameUI();
   }
 
- function buildStatsData() {
-  const rows = [];
+  function buildStatsData() {
+    const rows = [];
 
-  state.teams.forEach(team => {
-    team.players.forEach(player => {
-      if ((player.defenseCount || 0) > 0) {
-        rows.push({
-          teamName: team.name,
-          playerName: player.name,
-          count: player.defenseCount,
-          lastTs: player.lastTs
-        });
-      }
+    state.teams.forEach(team => {
+      team.players.forEach(player => {
+        if ((player.defenseCount || 0) > 0) {
+          rows.push({
+            teamName: team.name,
+            playerName: player.name,
+            count: player.defenseCount,
+            lastTs: player.lastTs
+          });
+        }
+      });
     });
-  });
 
-  rows.sort((a, b) => {
-    if (b.count !== a.count) return b.count - a.count;
-    if (a.teamName !== b.teamName) return a.teamName.localeCompare(b.teamName);
-    return a.playerName.localeCompare(b.playerName);
-  });
+    rows.sort((a, b) => {
+      if (b.count !== a.count) return b.count - a.count;
+      if (a.teamName !== b.teamName) return a.teamName.localeCompare(b.teamName);
+      return a.playerName.localeCompare(b.playerName);
+    });
 
-  return rows;
-}
+    return rows;
+  }
 
   function renderStats() {
     statsBodyEl.innerHTML = '';
@@ -959,7 +921,6 @@ function loadState() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Статистика');
 
-    // Генерим XLSX в память (ArrayBuffer)
     const array = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
 
     const mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -971,26 +932,16 @@ function loadState() {
       `${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
     const filename = `defense_stats_${stamp}.xlsx`;
 
-    // 1) Лучший вариант для iOS/Android: системное "Поделиться" с файлом
     try {
       const file = new File([blob], filename, { type: mime });
-
-      // navigator.canShare обязателен, иначе share с files может упасть
       if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
-        await navigator.share({
-          files: [file],
-          title: 'Статистика защиты'
-        });
-        return; // пользователь сам сохранит в "Файлы"
+        await navigator.share({ files: [file] }); // без text/title — без лишнего txt
+        return;
       }
-    } catch (e) {
-      // если share не поддерживается или пользователь отменил — пойдём в fallback
-    }
+    } catch (e) {}
 
-    // 2) Обычная загрузка (десктоп/часть Android)
     const url = URL.createObjectURL(blob);
 
-    // iOS часто игнорирует download у <a>, поэтому делаем отдельный fallback
     if (!isIOS()) {
       const a = document.createElement('a');
       a.href = url;
@@ -1002,11 +953,9 @@ function loadState() {
       return;
     }
 
-    // 3) Fallback для iOS: открыть файл в новой вкладке (дальше "Поделиться" -> "Сохранить в Файлы")
     window.open(url, '_blank');
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
-
 
   // Слушатели
   teamForm.addEventListener('submit', e => {
@@ -1071,135 +1020,127 @@ function loadState() {
   exportBtn.addEventListener('click', exportExcel);
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && modalTeamId) {
-      closePlayerModal();
-    }
+    if (e.key === 'Escape' && modalTeamId) closePlayerModal();
   });
 
-  // Элементы
-const birthdayBtn = document.getElementById("birthdayBtn");
-const birthdayModal = document.getElementById("birthdayModal");
-const birthdayImg = document.getElementById("birthdayImg");
-const birthdayClose = birthdayModal.querySelector(".close");
+  // ====== С ДР / МДА ======
+  const birthdayBtn = document.getElementById("birthdayBtn");
+  const birthdayModal = document.getElementById("birthdayModal");
+  const birthdayImg = document.getElementById("birthdayImg");
+  const birthdayClose = document.getElementById("birthdayClose");
 
-const mdaBtn = document.getElementById("mdaBtn");
-const mdaModal = document.getElementById("mdaModal");
-const mdaGif = document.getElementById("mdaGif");
-const mdaClose = mdaModal.querySelector(".close");
+  const mdaBtn = document.getElementById("mdaBtn");
+  const mdaModal = document.getElementById("mdaModal");
+  const mdaGif = document.getElementById("mdaGif");
+  const mdaClose = document.getElementById("mdaClose");
 
-// путь к гифке (положи файл рядом с index.html)
-const mdaGifPath = "mda.gif";
+  const birthdayPhoto = "dr.jpg";
+  const mdaGifPath = "mda.gif";
 
-mdaBtn.onclick = () => {
-  mdaGif.src = mdaGifPath;
-  mdaModal.classList.add("show");
-};
+  // 🎊 Конфетти
+  const confettiCanvas = document.getElementById("confettiCanvas");
+  const ctx = confettiCanvas.getContext("2d");
 
-mdaClose.onclick = () => {
-  mdaModal.classList.remove("show");
-  mdaGif.src = ""; // чтобы сбросить проигрывание
-};
+  let confetti = [];
+  let confettiAnimation;
 
-window.addEventListener("click", (e) => {
-  if (e.target === mdaModal) {
-    mdaModal.classList.remove("show");
-    mdaGif.src = "";
+  function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
   }
-});
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
 
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && mdaModal.classList.contains("show")) {
-    mdaModal.classList.remove("show");
-    mdaGif.src = "";
+  function createConfetti() {
+    confetti = [];
+    for (let i = 0; i < 150; i++) {
+      confetti.push({
+        x: Math.random() * confettiCanvas.width,
+        y: Math.random() * -confettiCanvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 5 + 2,
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+        tilt: Math.random() * 10 - 10
+      });
+    }
   }
-});
 
-// Путь к фото
-const birthdayPhoto = "dr.jpg";
+  function drawConfetti() {
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
 
-// 🎊 Конфетти
-const confettiCanvas = document.getElementById("confettiCanvas");
-const ctx = confettiCanvas.getContext("2d");
+    confetti.forEach(c => {
+      ctx.beginPath();
+      ctx.fillStyle = c.color;
+      ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
 
-let confetti = [];
-let confettiAnimation;
+    updateConfetti();
+  }
 
-function resizeCanvas() {
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
+  function updateConfetti() {
+    confetti.forEach(c => {
+      c.y += c.d;
+      c.x += Math.sin(c.tilt);
 
-function createConfetti() {
-  confetti = [];
-  for (let i = 0; i < 150; i++) {
-    confetti.push({
-      x: Math.random() * confettiCanvas.width,
-      y: Math.random() * -confettiCanvas.height,
-      r: Math.random() * 6 + 4,
-      d: Math.random() * 5 + 2,
-      color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-      tilt: Math.random() * 10 - 10
+      if (c.y > confettiCanvas.height) {
+        c.y = -10;
+        c.x = Math.random() * confettiCanvas.width;
+      }
     });
   }
-}
 
-function drawConfetti() {
-  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  function startConfetti() {
+    createConfetti();
+    confettiAnimation = setInterval(drawConfetti, 20);
+  }
 
-  confetti.forEach(c => {
-    ctx.beginPath();
-    ctx.fillStyle = c.color;
-    ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-    ctx.fill();
+  function stopConfetti() {
+    clearInterval(confettiAnimation);
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+
+  // Открытие/закрытие С ДР
+  birthdayBtn.addEventListener("click", () => {
+    birthdayImg.src = birthdayPhoto;
+    birthdayModal.classList.add("show");
+    startConfetti();
   });
 
-  updateConfetti();
-}
-
-function updateConfetti() {
-  confetti.forEach(c => {
-    c.y += c.d;
-    c.x += Math.sin(c.tilt);
-
-    if (c.y > confettiCanvas.height) {
-      c.y = -10;
-      c.x = Math.random() * confettiCanvas.width;
-    }
-  });
-}
-
-function startConfetti() {
-  createConfetti();
-  confettiAnimation = setInterval(drawConfetti, 20);
-}
-
-function stopConfetti() {
-  clearInterval(confettiAnimation);
-  ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-}
-
-
-birthdayBtn.onclick = () => {
-  birthdayImg.src = birthdayPhoto;
-  birthdayModal.classList.add("show");
-  startConfetti(); // запускаем конфетти при открытии
-};
-
-birthdayClose.onclick = () => {
-  birthdayModal.classList.remove("show");
-  stopConfetti(); // останавливаем конфетти при закрытии
-};
-
-window.onclick = (e) => {
-  if (e.target === birthdayModal) {
+  function closeBirthday() {
     birthdayModal.classList.remove("show");
     stopConfetti();
+    birthdayImg.src = "";
   }
-};
 
+  birthdayClose.addEventListener("click", closeBirthday);
 
+  // Открытие/закрытие МДА
+  mdaBtn.addEventListener("click", () => {
+    mdaGif.src = mdaGifPath;
+    mdaModal.classList.add("show");
+  });
+
+  function closeMda() {
+    mdaModal.classList.remove("show");
+    mdaGif.src = "";
+  }
+
+  mdaClose.addEventListener("click", closeMda);
+
+  // Клик по фону (и там, и там)
+  window.addEventListener("click", (e) => {
+    if (e.target === birthdayModal) closeBirthday();
+    if (e.target === mdaModal) closeMda();
+  });
+
+  // Escape закрывает и то, и то
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (birthdayModal.classList.contains("show")) closeBirthday();
+      if (mdaModal.classList.contains("show")) closeMda();
+    }
+  });
 
   // Инициализация
   loadState();
@@ -1210,21 +1151,3 @@ window.onclick = (e) => {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
